@@ -1,0 +1,11 @@
+* Show radar plot as progress (http://graves.cl/radar-chart-d3/)
+* Add authentication to admin section (adding/editing questions)
+* authenticate admin against username/password in DB
+* hash usernames/passwords in DB
+* have rounds linked to sessions
+* allow multiple sessions to "compete" in same round and see eachother's results/progress
+* have optional usernames/passwords for users
+* allow logged-in users to see the results of their past rounds
+* allow admins to create hand-tailored rounds
+* allow logged-in users to invite other usernames to specific rounds
+* create home page for logged-in users
