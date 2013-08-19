@@ -13,6 +13,7 @@ GEM
     sinatra (1.1.0)
       rack (~> 1.1)
       tilt (~> 1.1)
+    sinatra-cross_origin (0.2.0)
     thin (1.4.1)
       daemons (>= 1.0.9)
       eventmachine (>= 0.12.6)
@@ -27,4 +28,5 @@ DEPENDENCIES
   json
   mongo
   sinatra (= 1.1.0)
+  sinatra-cross_origin
   thin
