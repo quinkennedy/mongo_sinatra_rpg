@@ -1,0 +1,36 @@
+<html>
+<head>
+	<script data-main="load.js" src="/js/require.2.1.8.min.js"></script>
+	<script type="text/x-handlebars-template" id="question_list">
+	<div>
+	{{#each result/questions}}
+	<div class="clickable" id="q_{{uuid}}">{{text}}</div>
+	{{/each}}
+	{{#if result/showPrev}}
+	<div class="clickable" id="prev">prev</div>
+	{{/if}}
+
+	{{#if result/showNext}}
+	<div class="clickable" id="next">next</div>
+	{{/if}}
+	<div class="clickable" id="new">create new</div>
+	</div>
+	</script>
+	<script type="text/x-handlebars-template" id="question_info">
+	<div>
+	<div class="clickable" id="close">close</div>
+	<textarea id='text' {{#unless new}}readonly='readonly' disabled='disabled'>{{result.questions.0.text}}{{else}}>{{/unless}}</textarea>
+	{{#each tokens}}
+	<div id="t_{{uuid}}">{{text}}</div>
+	{{/each}}
+	<div class="clickable" id="update_{{#unless new}}{{result.questions.0.uuid}}{{/unless}}">{{#unless new}}edit{{else}}create{{/unless}}</div>
+	{{#unless new}}
+	<div class="clickable" id="delete_{{result.questions.0.uuid}}">delete</div>
+	{{/unless}}
+	</div>
+	</script>
+</head>
+<body>
+	loading...
+</body>
+</html>
