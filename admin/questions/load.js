@@ -10,8 +10,8 @@ function loadCSS(url){
 
 loadCSS("/css/bootstrap.min.css");
 
-require(["/js/jquery.2.0.2.min.js"
-	, "/js/tween.r10.min.js"
-	, "/js/handlebar.1.0.0.js"], function(){
+require(["../../js/jquery.2.0.2.min.js"
+	, "../../js/tween.r10.min.js"
+	, "../../js/handlebar.1.0.0.js"], function(){
 	require(["main"]);
 });
