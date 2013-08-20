@@ -21,7 +21,7 @@
 	<div class="clickable" id="close">close</div>
 	<textarea id='text' {{#unless new}}readonly='readonly' disabled='disabled'>{{result.questions.0.text}}{{else}}>{{/unless}}</textarea>
 	{{#each tokens}}
-	<div id="t_{{uuid}}">{{text}}</div>
+	<div id="t_{{uuid}}">{{text}}</div><input type='text' id='i_{{uuid}}' {{#unless ../new}}readonly='readonly' disabled='disabled'{{/unless}} value='{{#if value}}{{value}}{{else}}0{{/if}}' />
 	{{/each}}
 	<div class="clickable" id="update_{{#unless new}}{{result.questions.0.uuid}}{{/unless}}">{{#unless new}}edit{{else}}create{{/unless}}</div>
 	{{#unless new}}

@@ -94,13 +94,25 @@ var clicked = function(evt){
 }
 
 var showNewForm = function(){
-	document.body.innerHTML = q_indivTemplate({"new":true});
-	$(".clickable").on("click", clicked);
+	getTokens(function(tokens){
+		var data = {tokens:tokens, new:true};
+		document.body.innerHTML = q_indivTemplate(data);
+		$(".clickable").on("click", clicked);
+	});
 }
 
 var submitForm = function(uuid){
+	var data = {text: $("#text").val()};
+	$("input").each(function(index, element){
+		if (this.id.indexOf("i_") == 0){
+			//this is an input
+			data[this.id.substr(2)] = $(this).val();
+		}
+	});
+	console.log(data);
+
 	$.ajax({url: SITE+"/admin/question"+(uuid ? "/" + uuid : "")
-		, data: {text: $("#text").val()}
+		, data: data
 		, error: qError
 		, success: function(data){console.log(data); getList(currPage)}
 		, dataType: "json"
@@ -109,11 +121,14 @@ var submitForm = function(uuid){
 
 var gotQuestion = function(data, textStatus, jqXHR){
 	console.log(data);
-	getTokens(function(tokens){
-		data.tokens = tokens;
-		document.body.innerHTML = q_indivTemplate(data);
-		$(".clickable").on("click", clicked);
-	});
+	data.tokens = data.result.questions[0].tokens;
+	document.body.innerHTML = q_indivTemplate(data);
+	$(".clickable").on("click", clicked);
+	// getTokens(function(tokens){
+	// 	data.tokens = tokens;
+	// 	document.body.innerHTML = q_indivTemplate(data);
+	// 	$(".clickable").on("click", clicked);
+	// });
 }
 
 $(whenReady);
