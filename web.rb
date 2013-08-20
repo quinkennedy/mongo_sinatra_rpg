@@ -103,6 +103,24 @@ get %r{/admin/question/page/([\d]+)} do |n|
 	response.to_json
 end
 
+def getQTokens(params)
+	qTokens = {}
+	tokens = adminGetTokens
+	tokens.each_slice(10) do |slice|
+		slice.each do |token|
+			begin
+				value = Integer(params[token["uuid"]].strip);
+				if value != 0
+					qTokens[token["uuid"]] = value
+				end
+			rescue Exception
+				next
+			end
+		end
+	end
+	qTokens
+end
+
 post '/admin/question' do
 	#create a new question
 	response = {"result" => {}, "success" => false, "error" => "unknown"}
@@ -115,14 +133,18 @@ post '/admin/question' do
 			#make sure text is unique
 			questions = get_collection($QUESTIONS)
 			if questions.find("text" => text).count == 0
-				#TODO: handle token definitions
+				#handle token definitions
+				qTokens = getQTokens(params)
+
 				#get (and confirm) a unique id
+				#TODO: db query might be more expensive than generating a uuid,
+				#  if so, we should gen the uuid before the first query
 				uuid = ""
 				begin
 					uuid = `uuidgen`.strip
 				end until questions.find("uuid" => uuid).count == 0
 
-				question = {"uuid" => uuid, "text" => params["text"], "tokens" => {}}
+				question = {"uuid" => uuid, "text" => params["text"], "tokens" => qTokens}
 				question["_id"] = questions.insert(question)
 				response["result"]["questions"] = [question]
 				response["success"] = true
@@ -146,8 +168,27 @@ end
 
 get '/admin/question/:id' do |id|
 	#get the specific question
+	response = adminGetQuestion(id)
+	puts response.to_json
+	if response["success"]
+		#move tokens to array and
+		#  add all other tokens to 0
+		tokens = adminGetTokens
+		qTokens = response["result"]["questions"][0]["tokens"]
+		response["result"]["questions"][0]["tokens"] = []
+		tokens.each_slice(10) do |slice|
+			slice.each do |token|
+				value = 0
+				if qTokens[token["uuid"]]
+					value = qTokens[token["uuid"]]
+				end
+				response["result"]["questions"][0]["tokens"].push({"uuid" => token["uuid"], "text" => token["text"], "value" => value})
+			end
+		end
+	end
+
 	content_type :json
-	response = adminGetQuestion(id).to_json
+	response.to_json
 end
 
 options '/admin/question/:id' do
@@ -160,24 +201,39 @@ put '/admin/question/:id' do |id|
 		response["success"] = false
 		response["error"] = "unknown"
 		question = response["result"]["questions"][0]
+		questions = get_collection($QUESTIONS)
 
 		#do update
 		# TODO: make sure the text is still unique
-		updated = false;
+		updated = false
+		error = false
 		text = params["text"]
 		if text and text.is_a? String
 			text = text.strip
 			if text != "" and text != question["text"]
-				question["text"] = text
-				updated = true;
+				if questions.find("text" => text).count == 0
+					question["text"] = text
+					updated = true;
+				else
+					error = true
+					response["error"] = "duplicate question text found"
+				end
 			end
 		end
-		#TODO: update tokens
+		
+		#update tokens
+		puts question.to_json
+		unless error
+			#TODO: check if tokens have changed to avoid unnecessary update
+			question["tokens"] = getQTokens(params)
+			updated = true;
+		end
+		puts question.to_json
 
 		if updated
-			get_collection($QUESTIONS).update({"_id" => question["_id"]}, question)
+			questions.save(question)
 			response["success"] = true
-		else
+		elsif !error
 			response["error"] = "no update"
 		end
 	end
@@ -244,16 +300,17 @@ def adminGetToken(uuid)
 	response
 end
 
+def adminGetTokens
+	#TODO: is there a safe way to cache all the tokens
+	#  , and update when new tokens are added?
+	get_collection($TOKENS).find({}, :fields => ["uuid", "text"])
+end
+
 get '/admin/token' do
 	#get list of all tokens
 	coll = get_collection($TOKENS)
 
-	response = {"result" => {"tokens" => []}, "success" => false, "error" => "unknown"}
-	tokens = coll.find
-
-	tokens.each do |token|
-		response["result"]["tokens"].push({"uuid" => token["uuid"], "text" => token["text"]})
-	end
+	response = {"result" => {"tokens" => adminGetTokens.to_a}, "success" => false, "error" => "unknown"}
 	response["success"] = true
 
 	if response["success"]
