@@ -8,7 +8,7 @@ function loadCSS(url){
     document.getElementsByTagName("head")[0].appendChild(link);
 }
 
-loadCSS("/css/bootstrap.min.css");
+loadCSS("../../css/bootstrap.min.css");
 
 require(["../../js/jquery.2.0.2.min.js"
 	, "../../js/tween.r10.min.js"
