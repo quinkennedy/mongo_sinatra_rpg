@@ -2,20 +2,32 @@
 <head>
 	<script data-main="load.js" src="../../js/require.2.1.8.min.js"></script>
 	<script type="text/x-handlebars-template" id="token_list">
-	<div>
+	<div class="container">
 	{{#each result/tokens}}
-	<div class="clickable" id="t_{{uuid}}">{{text}}</div>
+	<div class="row">
+	<div class="clickable btn btn-link" id="t_{{uuid}}">{{text}}</div>
+	</div>
 	{{/each}}
-	<div class="clickable" id="new">create new</div>
+	<div class="row">
+	<div class="clickable btn btn-success" id="new">create new</div>
+	</div>
 	</div>
 	</script>
 	<script type="text/x-handlebars-template" id="token_info">
-	<div>
-	<div class="clickable" id="close">close</div>
+	<div class="container">
+	<div class="row">
+	<div class="clickable btn btn-default" id="close">close</div>
+	</div>
+	<div class="row">
 	<textarea id='text' {{#unless new}}readonly='readonly' disabled='disabled'>{{result.tokens.0.text}}{{else}}>{{/unless}}</textarea>
-	<div class="clickable" id="update_{{#unless new}}{{result.tokens.0.uuid}}{{/unless}}">{{#unless new}}edit{{else}}create{{/unless}}</div>
+	</div>
+	<div class="row">
+	<div class="clickable btn btn-default" id="update_{{#unless new}}{{result.tokens.0.uuid}}{{/unless}}">{{#unless new}}edit{{else}}create{{/unless}}</div>
+	</div>
 	{{#unless new}}
-	<div class="clickable" id="delete_{{result.tokens.0.uuid}}">delete</div>
+	<div class="row">
+	<div class="clickable btn btn-danger" id="delete_{{result.tokens.0.uuid}}">delete</div>
+	</div>
 	{{/unless}}
 	</div>
 	</script>

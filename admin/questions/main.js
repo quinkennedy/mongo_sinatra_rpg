@@ -1,4 +1,5 @@
-SITE = "http://localhost:5000";
+//SITE = "http://localhost:5000";
+SITE = "http://evening-castle-8558.herokuapp.com";
 currPage = 0;
 tokens = undefined;
 
@@ -87,6 +88,8 @@ var clicked = function(evt){
 		if ($(this).text() == "edit"){
 			$("[readonly]").removeAttr("readonly").removeAttr("disabled");
 			$(this).text("update");
+			$(this).addClass("btn-warning");
+			$(this).removeClass("btn-default");
 		} else {
 			submitForm(id.substr("update_".length));
 		}

@@ -2,30 +2,46 @@
 <head>
 	<script data-main="load.js" src="../../js/require.2.1.8.min.js"></script>
 	<script type="text/x-handlebars-template" id="question_list">
-	<div>
+	<div class="container">
 	{{#each result/questions}}
-	<div class="clickable" id="q_{{uuid}}">{{text}}</div>
+	<div class="row">
+	<div class="clickable btn btn-link" id="q_{{uuid}}">{{text}}</div>
+	</div>
 	{{/each}}
+	<div class="row">
 	{{#if result/showPrev}}
-	<div class="clickable" id="prev">prev</div>
+	<div class="clickable btn btn-default" id="prev">prev</div>
 	{{/if}}
 
 	{{#if result/showNext}}
-	<div class="clickable" id="next">next</div>
+	<div class="clickable btn btn-default" id="next">next</div>
 	{{/if}}
-	<div class="clickable" id="new">create new</div>
+	</div>
+	<div class="row">
+	<div class="clickable btn btn-success" id="new">create new</div>
+	</div>
 	</div>
 	</script>
 	<script type="text/x-handlebars-template" id="question_info">
-	<div>
-	<div class="clickable" id="close">close</div>
+	<div class="container">
+	<div class="row">
+	<div class="clickable btn btn-default" id="close">close</div>
+	</div>
+	<div class="row">
 	<textarea id='text' {{#unless new}}readonly='readonly' disabled='disabled'>{{result.questions.0.text}}{{else}}>{{/unless}}</textarea>
+	</div>
 	{{#each tokens}}
+	<div class="row">
 	<div id="t_{{uuid}}">{{text}}</div><input type='text' id='i_{{uuid}}' {{#unless ../new}}readonly='readonly' disabled='disabled'{{/unless}} value='{{#if value}}{{value}}{{else}}0{{/if}}' />
+	</div>
 	{{/each}}
-	<div class="clickable" id="update_{{#unless new}}{{result.questions.0.uuid}}{{/unless}}">{{#unless new}}edit{{else}}create{{/unless}}</div>
+	<div class="row">
+	<div class="clickable btn btn-default" id="update_{{#unless new}}{{result.questions.0.uuid}}{{/unless}}">{{#unless new}}edit{{else}}create{{/unless}}</div>
+	</div>
 	{{#unless new}}
-	<div class="clickable" id="delete_{{result.questions.0.uuid}}">delete</div>
+	<div class="row">
+	<div class="clickable btn btn-danger" id="delete_{{result.questions.0.uuid}}">delete</div>
+	</div>
 	{{/unless}}
 	</div>
 	</script>
