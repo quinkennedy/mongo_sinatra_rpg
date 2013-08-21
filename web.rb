@@ -3,11 +3,13 @@ require 'mongo'
 require 'uri'
 require 'json'
 require 'sinatra/cross_origin'
+require 'uuid'
 
 $QUESTIONS = "questions"
 $ROUNDS = "rounds"
 $TOKENS = "tokens"
 $db_collection = {}
+$uuid = UUID.new
 
 def get_collection(coll_name)
 	return $db_collection[coll_name] if $db_collection[coll_name]
@@ -141,7 +143,7 @@ post '/admin/question' do
 				#  if so, we should gen the uuid before the first query
 				uuid = ""
 				begin
-					uuid = `uuidgen`.strip
+					uuid = $uuid.generate
 				end until questions.find("uuid" => uuid).count == 0
 
 				question = {"uuid" => uuid, "text" => params["text"], "tokens" => qTokens}
@@ -335,7 +337,7 @@ post '/admin/token' do
 				#get (and confirm) a unique id
 				uuid = ""
 				begin
-					uuid = `uuidgen`.strip
+					uuid = $uuid.generate
 				end until tokens.find("uuid" => uuid).count == 0
 
 				token = {"uuid" => uuid, "text" => params["text"]}
