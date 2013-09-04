@@ -110,14 +110,27 @@ def getQTokens(params)
 	tokens = adminGetTokens
 	tokens.each_slice(10) do |slice|
 		slice.each do |token|
+			tokenData = {}
+			hasData = false
 			begin
-				value = Integer(params[token["uuid"]].strip);
+				value = Integer(params[token["uuid"]+"_yes"].strip);
 				if value != 0
-					qTokens[token["uuid"]] = value
+					tokenData["yes"] = value
+					hasData = true
 				end
 			rescue Exception
-				next
 			end
+			begin
+				value = Integer(params[token["uuid"]+"_no"].strip);
+				if value != 0
+					tokenData["no"] = value
+					hasData = true
+				end
+			rescue Exception
+			end
+				if hasData
+					qTokens[token["uuid"]] = tokenData
+				end
 		end
 	end
 	qTokens
@@ -180,9 +193,13 @@ get '/admin/question/:id' do |id|
 		response["result"]["questions"][0]["tokens"] = []
 		tokens.each_slice(10) do |slice|
 			slice.each do |token|
-				value = 0
-				if qTokens[token["uuid"]]
-					value = qTokens[token["uuid"]]
+				value = {"yes" => 0, "no" => 0}
+				if qTokens[token["uuid"]] and qTokens[token["uuid"]]["yes"]
+					value["yes"] = qTokens[token["uuid"]]["yes"]
+				end
+				noValue = 0
+				if qTokens[token["uuid"]] and qTokens[token["uuid"]]["no"]
+					value["no"] = qTokens[token["uuid"]]["no"]
 				end
 				response["result"]["questions"][0]["tokens"].push({"uuid" => token["uuid"], "text" => token["text"], "value" => value})
 			end
