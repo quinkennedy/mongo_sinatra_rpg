@@ -1,48 +1,61 @@
 <html>
 <head>
 	<script data-main="load.js" src="../../js/require.2.1.8.min.js"></script>
+	<style type="text/css">
+		.stripe:nth-child(even) {background:lightyellow;}
+	</style>
 	<script type="text/x-handlebars-template" id="question_list">
 	<div class="container">
-	{{#each result/questions}}
-	<div class="row">
-	<div class="clickable btn btn-link" id="q_{{uuid}}">{{text}}</div>
-	</div>
-	{{/each}}
-	<div class="row">
-	{{#if result/showPrev}}
-	<div class="clickable btn btn-default" id="prev">prev</div>
-	{{/if}}
+		{{#each result/questions}}
+		<div class="row">
+			<div class="clickable btn btn-link" id="q_{{uuid}}">{{text}}</div>
+		</div>
+		{{/each}}
+		<div class="row">
+			{{#if result/showPrev}}
+			<div class="clickable btn btn-default" id="prev">prev</div>
+			{{/if}}
 
-	{{#if result/showNext}}
-	<div class="clickable btn btn-default" id="next">next</div>
-	{{/if}}
-	</div>
-	<div class="row">
-	<div class="clickable btn btn-success" id="new">create new</div>
-	</div>
+			{{#if result/showNext}}
+			<div class="clickable btn btn-default" id="next">next</div>
+			{{/if}}
+		</div>
+		<div class="row">
+			<div class="clickable btn btn-success" id="new">create new</div>
+		</div>
 	</div>
 	</script>
 	<script type="text/x-handlebars-template" id="question_info">
 	<div class="container">
-	<div class="row">
-	<div class="clickable btn btn-default" id="close">close</div>
-	</div>
-	<div class="row">
-	<textarea id='text' {{#unless new}}readonly='readonly' disabled='disabled'>{{result.questions.0.text}}{{else}}>{{/unless}}</textarea>
-	</div>
-	{{#each tokens}}
-	<div class="row">
-	<div id="t_{{uuid}}">{{text}}</div><input type='text' id='i_{{uuid}}' {{#unless ../new}}readonly='readonly' disabled='disabled'{{/unless}} value='{{#if value}}{{value}}{{else}}0{{/if}}' />
-	</div>
-	{{/each}}
-	<div class="row">
-	<div class="clickable btn btn-default" id="update_{{#unless new}}{{result.questions.0.uuid}}{{/unless}}">{{#unless new}}edit{{else}}create{{/unless}}</div>
-	</div>
-	{{#unless new}}
-	<div class="row">
-	<div class="clickable btn btn-danger" id="delete_{{result.questions.0.uuid}}">delete</div>
-	</div>
-	{{/unless}}
+		<div class="row">
+			<div class="clickable btn btn-default" id="close">close</div>
+		</div>
+		<div class="row">
+			<label for="text" class="control-label">Text</label>
+			<textarea id='text' class="form-control disableable" {{#unless new}}readonly='readonly' disabled='disabled'>{{result.questions.0.text}}{{else}}>{{/unless}}</textarea>
+		</div>
+		{{#each tokens}}
+		<div class="row stripe">
+			<div class="col-sm-2" id="t_{{uuid}}"><strong>{{text}}</strong></div>
+			<div class="form-group col-sm-4">
+				<label for="i_{{uuid}}_yes" class="control-label">Yes</label>
+				<input type='text' class="form-control disableable" id='i_{{uuid}}_yes' {{#unless ../new}}readonly='readonly' disabled='disabled'{{/unless}} value='{{#if value.yes}}{{value.yes}}{{else}}0{{/if}}' />
+			</div>
+			<div class="form-group col-sm-4">
+				<label for="i_{{uuid}}_no" class="control-label">No</label>
+				<input type='text' class="form-control disableable" id='i_{{uuid}}_no' {{#unless ../new}}readonly='readonly' disabled='disabled'{{/unless}} value='{{#if value.no}}{{value.no}}{{else}}0{{/if}}' />
+			</div>
+		</div>
+		{{/each}}
+		<div class="row">
+			<div class="clickable btn btn-default hidden" id="cancel_{{#unless new}}{{result.questions.0.uuid}}{{/unless}}">cancel</div>
+			<div class="clickable btn btn-default" id="update_{{#unless new}}{{result.questions.0.uuid}}{{/unless}}">{{#unless new}}edit{{else}}create{{/unless}}</div>
+		</div>
+		{{#unless new}}
+		<div class="row">
+			<div class="clickable btn btn-danger" id="delete_{{result.questions.0.uuid}}">delete</div>
+		</div>
+		{{/unless}}
 	</div>
 	</script>
 </head>

@@ -86,13 +86,21 @@ var clicked = function(evt){
 			, type: "DELETE"});
 	} else if (id.indexOf("update_") == 0){
 		if ($(this).text() == "edit"){
-			$("[readonly]").removeAttr("readonly").removeAttr("disabled");
+			$(".disableable").removeAttr("readonly").removeAttr("disabled");
+			$("#cancel_"+id.substr("update_".length)).removeClass("hidden");
 			$(this).text("update");
 			$(this).addClass("btn-warning");
 			$(this).removeClass("btn-default");
 		} else {
 			submitForm(id.substr("update_".length));
 		}
+	} else if (id.indexOf("cancel_") == 0){
+		$(".disableable").attr("readonly", "readonly").attr("disabled", "disabled");
+		$(this).addClass("hidden");
+		var updateSelector = "#update_"+id.substr("cancel_".length);
+		$(updateSelector).text("edit");
+		$(updateSelector).removeClass("btn-warning");
+		$(updateSelector).addClass("btn-default");
 	}
 }
 
